@@ -4,6 +4,8 @@ module Slack
     module Api
       module Helpers
         module Files
+          COMPLETE_UPLOAD_OPTIONS = %i[initial_comment blocks thread_ts username icon_url icon_emoji].freeze
+
           #
           # Uses Slack APIs new sequential file upload flow. This replaces the files.upload method
           # @see https://api.slack.com/changelog/2024-04-a-better-way-to-upload-files-is-here-to-stay
@@ -36,6 +38,13 @@ module Slack
           #   Provide another message's ts value to upload this file as a reply.
           #   Never use a reply's ts value; use its parent instead.
           #   Also make sure to provide only one channel when using 'thread_ts'.
+          # @option params [string] :username
+          #   Set your bot's user name for the file share message. Requires the chat:write.customize scope.
+          # @option params [string] :icon_url
+          #   URL to an image to use as the icon for the file share message. Requires the chat:write.customize scope.
+          # @option params [string] :icon_emoji
+          #   Emoji to use as the icon for the file share message. Overrides icon_url.
+          #   Requires the chat:write.customize scope.
           def files_upload_v2(params = {})
             files_to_upload = if params[:files] && params[:files].is_a?(Array)
                                 params[:files]
@@ -52,7 +61,7 @@ module Slack
             channel_params = %i[channel channels channel_id].map { |param| params[param] }.compact
             raise ArgumentError, 'only one of :channel, :channels, or :channel_id is required' if channel_params.size > 1
 
-            complete_upload_request_params = params.slice(:initial_comment, :blocks, :thread_ts)
+            complete_upload_request_params = params.slice(*COMPLETE_UPLOAD_OPTIONS)
 
             if params[:channels]
               complete_upload_request_params[:channels] = Array(params[:channels]).map do |channel|

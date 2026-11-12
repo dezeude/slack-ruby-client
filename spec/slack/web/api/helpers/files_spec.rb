@@ -30,5 +30,27 @@ RSpec.describe Slack::Web::Api::Helpers::Files do
         client.files_upload_v2(filename: 'hello.txt', content: 'hello', channel: '#general', channel_id: 'C123456')
       end.to raise_error(ArgumentError, 'only one of :channel, :channels, or :channel_id is required')
     end
+
+    it 'passes username and icon options to files.completeUploadExternal' do
+      stub_request(:post, 'https://slack.com/api/files.getUploadURLExternal')
+        .to_return(body: { ok: true, upload_url: 'https://files.slack.test/upload', file_id: 'F123' }.to_json)
+      stub_request(:post, 'https://files.slack.test/upload').with(body: 'hello')
+      complete = stub_request(:post, 'https://slack.com/api/files.completeUploadExternal')
+                 .with(body: {
+                         files: [{ id: 'F123', title: 'hello.txt' }].to_json,
+                         channel_id: 'C123456',
+                         username: 'Reports Bot',
+                         icon_emoji: ':bar_chart:',
+                         icon_url: 'https://example.com/icon.png'
+                       })
+                 .to_return(body: { ok: true }.to_json)
+
+      client.files_upload_v2(
+        filename: 'hello.txt', content: 'hello', channel_id: 'C123456',
+        username: 'Reports Bot', icon_emoji: ':bar_chart:', icon_url: 'https://example.com/icon.png'
+      )
+
+      expect(complete).to have_been_requested
+    end
   end
 end

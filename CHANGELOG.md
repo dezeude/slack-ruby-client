@@ -1,5 +1,6 @@
 ### 3.3.1 (Next)
 
+* [#XXX](https://github.com/slack-ruby/slack-ruby-client/pull/XXX): Pass `username`, `icon_url`, and `icon_emoji` through `files_upload_v2` to `files.completeUploadExternal` - [@dezeude](https://github.com/dezeude).
 * Your contribution here.
 
 ### 3.3.0 (2026/10/09)

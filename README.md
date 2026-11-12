@@ -169,7 +169,9 @@ client.files_upload_v2(
   initial_comment: 'Sharing the Q1 results :tada:', # the message that is included with the file share thread
   snippet_type: 'text', # the type of snippet
   title: 'Q1 Results', # sets the title of the file, overriding the filename
-  thread_ts: '1738331487.481469' # specifies a thread to add this file to
+  thread_ts: '1738331487.481469', # specifies a thread to add this file to
+  username: 'Reports Bot', # name to post the file share message as, requires the chat:write.customize scope
+  icon_emoji: ':bar_chart:' # icon to post the file share message with, also :icon_url, requires chat:write.customize
 )
 ```
 
